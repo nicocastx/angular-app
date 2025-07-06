@@ -1,14 +1,37 @@
-<form (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" #productForm="ngForm">
   <div>
-    <input type="text" placeholder="Name" name="name" id="" [(ngModel)]="product.name">
+    <input placeholder="Name" name="name" id="" #name="ngModel" [(ngModel)]="product.name" required>
+    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+      <p>El nombre es requerido</p>
+    </div>
   </div>
   <div>
-    <input type="text" placeholder="Description" name="description" id="" [(ngModel)]="product.description">
+    <input placeholder="Description" name="description" id="" #description="ngModel" [(ngModel)]="product.description"
+      required>
+    <div *ngIf="description.invalid && description.touched" class="alert alert-danger">
+      <p>La descripcion es requerido</p>
+    </div>
   </div>
   <div>
-    <input type="number" placeholder="Price" name="price" id="" [(ngModel)]="product.price">
+    <input type="number" placeholder="Price" name="price" id="" #price="ngModel" [(ngModel)]="product.price" required
+      min="50" max="1000">
+    <div *ngIf="price.invalid && price.touched" class="alert alert-danger">
+
+      @if (price.errors!['required']){
+      <p>Precio es requerido</p>
+      }
+      @if (price.errors!['min']){
+      <p>Precio minimo es 50</p>
+      }
+      @if (price.errors!['max']){
+      <p>Precio maximo es 1000</p>
+      }
+    </div>
   </div>
   <div>
-    <button type="submit">{{product.id > 0 ? 'Actualizar' : 'Crear'}}</button>
+    <button [disabled]="!productForm.form.valid" type="submit">{{product.id > 0 ? 'Actualizar' : 'Crear'}}</button>
+  </div>
+  <div>
+    <button type="button" (click)="cleanForm()">Limpiar formulario</button>
   </div>
 </form>

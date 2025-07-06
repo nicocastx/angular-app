@@ -37,7 +37,9 @@ export class ProductComponent implements OnInit {
   }
 
   onUpdateProduct(product: Product) : void{
-    this.selectedProduct = product
+    //si no lo deconstruyo en un nuevo objeto en esta parte, va a modificar a cada rato la instancia original
+    //lo cual esta mal ya que en el backend no se va a actualizar hasta que se de click en actualizar en el frontend
+    this.selectedProduct = {...product}
   }
 
   onRemoveProduct(product: Product) : void {
