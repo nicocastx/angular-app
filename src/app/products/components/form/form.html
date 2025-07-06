@@ -1,0 +1,14 @@
+<form (ngSubmit)="onSubmit()">
+  <div>
+    <input type="text" placeholder="Name" name="name" id="" [(ngModel)]="product.name">
+  </div>
+  <div>
+    <input type="text" placeholder="Description" name="description" id="" [(ngModel)]="product.description">
+  </div>
+  <div>
+    <input type="number" placeholder="Price" name="price" id="" [(ngModel)]="product.price">
+  </div>
+  <div>
+    <button type="submit">{{product.id > 0 ? 'Actualizar' : 'Crear'}}</button>
+  </div>
+</form>
