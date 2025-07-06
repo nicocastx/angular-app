@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -17,9 +18,32 @@ export class ProductService {
     { id: 5, name: 'Product 5', description: 'Description 5', price: 50 }
   ]
 
-  constructor() { }
+  private url: string = 'http://localhost:8080/products'
 
-  findAll() : Observable<Product[]> {
-    return of(this.products)
+  constructor(private httpClient: HttpClient) { }
+
+  /*findAll() : Observable<Product[]> {
+    //return of(this.products)
+    return
   }
+    */
+  findAll(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.url).pipe(
+      map((response: any) => response._embedded.products as Product[]),
+      //podria agregar mas operadores, como filter, etc.
+    )
+  }
+
+  create(product: Product) : Observable<Product>{
+    return this.httpClient.post<Product>(this.url, product)
+  }
+
+  update(product: Product) : Observable<Product>{
+    return this.httpClient.put<Product>(`${this.url}/${product.id}`, product)
+  }
+
+  delete(product: Product) : Observable<void>{
+    return this.httpClient.delete<void>(`${this.url}/${product.id}`)
+  }
+
 }

@@ -22,28 +22,41 @@ export class ProductComponent implements OnInit {
     })
   }
 
-  addProductHandler(product: Product) : void {
+  addProductHandler(product: Product): void {
     //this.products.push(product)
     if (product.id > 0) {
-      this.products = this.products.map(prod => {
-        if (prod.id === product.id) {
-          return { ...product }
-        }
-        return prod
+      this.service.update(product).subscribe(productUpdate => {
+        this.products = this.products.map(prod => {
+          if (prod.id === productUpdate.id) {
+            return { ...productUpdate }
+          } else {
+            return prod
+          }
+        })
+        this.selectedProduct = new Product();
+
       })
-      return
+    } else {
+      this.service.create(product).subscribe(productNew => {
+        this.products = [...this.products, { ...productNew }]
+      })
+      this.selectedProduct = new Product();
     }
-    this.products = [...this.products, { ...product, id: new Date().getTime() }]
+    //lo debo suscribir para poder hacer andar el flujo
+
   }
 
-  onUpdateProduct(product: Product) : void{
+  onUpdateProduct(product: Product): void {
     //si no lo deconstruyo en un nuevo objeto en esta parte, va a modificar a cada rato la instancia original
     //lo cual esta mal ya que en el backend no se va a actualizar hasta que se de click en actualizar en el frontend
-    this.selectedProduct = {...product}
+    this.selectedProduct = { ...product }
   }
 
-  onRemoveProduct(product: Product) : void {
-    this.products = this.products.filter(prod => prod.id !== product.id)
+  onRemoveProduct(product: Product): void {
+    this.service.delete(product).subscribe( () =>
+      this.products = this.products.filter(prod => prod.id !== product.id)
+    )
+
   }
 
 }
